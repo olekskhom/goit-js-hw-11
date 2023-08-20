@@ -43,3 +43,33 @@ ref.btnLoadMore.addEventListener('click', handlerBtnLoadMoreClick);
 ref.btnLoadMore.classList.add('is-hidden');
 
 
+// Обробник події для подання форми пошуку
+function handlerSearchImg(e) {
+  e.preventDefault();
+
+  // Очищаємо контейнер для зображень і скидаємо сторінку
+  ref.gallery.innerHTML = '';
+  ref.btnLoadMore.classList.add('is-hidden');
+
+  // Отримуємо термін пошуку з форми
+  pixabayApiInstance.page = 1;
+  pixabayApiInstance.searchTerm = ref.form[0].value.trim();
+    isShow = 0;
+    
+    // Перевіряємо, чи заповнено поле для пошуку
+  if (pixabayApiInstance.searchTerm === '') {
+    Notiflix.Notify.warning('Please, fill the main field', notiflixOptions);
+    return;
+  }
+
+  // Викликаємо функцію для завантаження зображень
+  fenchGallery();
+}
+
+
+// Асинхронна функція для завантаження зображень
+async function fenchGallery() {
+    
+}
+
+
