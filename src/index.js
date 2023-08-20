@@ -69,7 +69,43 @@ function handlerSearchImg(e) {
 
 // Асинхронна функція для завантаження зображень
 async function fenchGallery() {
-    
+  // Виконуємо HTTP-запит до Pixabay API і отримуємо результат
+  const response = await pixabayApiInstance.fetchImg();
+  const { hits, totalHits } = response;
+
+  // Оновлюємо кількість показаних зображень
+  isShow += hits.length;
+
+  // Перевіряємо результат запиту та кількість показаних зображень
+  if (!hits.length || isShow >= totalHits) {
+    // Якщо зображень не знайдено або показані всі доступні
+    ref.btnLoadMore.classList.add('is-hidden');
+    Notiflix.Notify.failure(
+      'Sorry, there are no images matching your search query. Please try again.'
+    );
+  } else if (isShow < totalHits) {
+    // Якщо ще є доступні зображення для завантаження
+    ref.btnLoadMore.classList.remove('is-hidden');
+    Notiflix.Notify.success(
+      `Hooray! We found ${totalHits} images.`,
+      notiflixOptions
+    );
+  }
+
+  // Додаємо зображення до контейнера
+  ref.gallery.insertAdjacentHTML('beforeend', createMarkup(hits));
+
+  // Оновлюємо SimpleLightbox для нових зображень
+  lightbox.refresh();
 }
 
 
+// Обробник події для кнопки "Завантажити ще "
+function handlerBtnLoadMoreClick() {
+
+  // Збільшуємо номер сторінки для завантаження наступних зображень
+  pixabayApiInstance.incrementPage();
+
+  // Викликаємо функцію для завантаження зображень
+  fenchGallery();
+}
